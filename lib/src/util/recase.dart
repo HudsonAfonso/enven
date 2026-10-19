@@ -8,8 +8,7 @@ extension StringExtensions on String {
     return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
   }
 
-  /// transforms the string to the specified case
-  /// if case is null, then no transformation will be applied
+  /// transforms the string to camel case
   String toCamelCase() {
     final words = getWords();
     final firstWord = words[0].toLowerCase();

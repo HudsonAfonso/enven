@@ -1,7 +1,7 @@
 # enven
 
 [![pub package](https://img.shields.io/pub/v/enven.svg)](https://pub.dev/packages/enven)
-![ci](https://github.com/Tienisto/enven/actions/workflows/ci.yml/badge.svg)
+![ci](https://codeberg.org/Tienisto/enven/actions/workflows/ci.yml/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Generate environment variables from a .env file at compile time with optional obfuscation.
@@ -20,6 +20,7 @@ With enven, you just need to write a `.env` file and run `dart run enven` to gen
 
 - [Getting Started](#getting-started)
 - [Configuration](#configuration)
+- [CLI Options](#cli-options)
 - [Types](#types)
 - [Overrides](#overrides)
 - [Mocking](#mocking)
@@ -48,6 +49,12 @@ API_ENDPOINT=https://example.com
 dart run enven
 ```
 
+You can also specify custom env files and/or a custom class name:
+
+```bash
+dart run enven --env-files .env,.env.staging --class-name Config
+```
+
 If you just check out the project, you can also run `build_runner`.
 
 Be careful because it only works once. (Subsequent runs won't notice changes.)
@@ -71,6 +78,7 @@ Comments starting with `#enven:` are treated as configuration.
 
 ```bash
 #enven:output=lib/gen/env.g.dart
+#enven:class=Config
 
 #enven:obfuscate
 #enven:type=String
@@ -85,10 +93,26 @@ API_ENDPOINT=https://example.com
 |-------------|------------|-----------------------------------|-------------------------------------|----------------------|
 | `output`    | file       | `String`                          | Specify output file path            | `lib/gen/env.g.dart` |
 | `seed`      | file       | `String`                          | Specify seed for obfuscation        | (random)             |
+| `class`     | file       | `String`                          | Specify generated class name        | `Env`                |
 | `obfuscate` | variable   | `bool`                            | Obfuscate the environment variable. | `false`              |
 | `const`     | variable   | `bool`                            | Generate as const                   | `false`              |
 | `type`      | variable   | `String`, `int`, `double`, `bool` | Specify exact type                  | (inferred)           |
 | `name`      | variable   | `String`                          | Specify variable name               | (inferred)           |
+
+## CLI Options
+
+You can override some settings via command line arguments:
+
+| Option         | Description                                               | Example                                  |
+|----------------|-----------------------------------------------------------|------------------------------------------|
+| `--env-files`  | Comma-separated list of .env files (overrides defaults)   | `--env-files .env,.env.staging`          |
+| `--class-name` | Override the generated class name                         | `--class-name Config`                    |
+
+```bash
+dart run enven --env-files .env,.env.staging --class-name Config
+```
+
+CLI options take precedence over `#enven:` annotations.
 
 ## Types
 
@@ -168,7 +192,7 @@ Be aware that variables annotated with `#enven:const` cannot be overridden.
 
 MIT License
 
-Copyright (c) 2023-2025 Tien Do Nam
+Copyright (c) 2023-2026 Tien Do Nam
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

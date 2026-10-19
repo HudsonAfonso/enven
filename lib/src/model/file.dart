@@ -28,11 +28,22 @@ class EnvFile {
       }
     }
     return EnvFile(
-      config: EnvenConfig(
-        output: config.output ?? fallback.config.output,
-        seed: config.seed ?? fallback.config.seed,
+      config: fallback.config.copyWith(
+        output: config.output,
+        seed: config.seed,
+        className: config.className,
       ),
       entries: mergedEntries,
+    );
+  }
+
+  EnvFile copyWith({
+    EnvenConfig? config,
+    Map<String, EnvEntry>? entries,
+  }) {
+    return EnvFile(
+      config: config ?? this.config,
+      entries: entries ?? this.entries,
     );
   }
 }
@@ -40,6 +51,7 @@ class EnvFile {
 /// Global configuration specified in a .env file.
 class EnvenConfig {
   static const defaultOutput = 'lib/gen/env.g.dart';
+  static const defaultClassName = 'Env';
 
   /// The output file path.
   final String? output;
@@ -48,10 +60,27 @@ class EnvenConfig {
   /// If null, a random seed will be used.
   final String? seed;
 
+  /// The class name for the generated code.
+  /// If null, defaults to [defaultClassName].
+  final String? className;
+
   EnvenConfig({
     required this.output,
     required this.seed,
+    this.className,
   });
+
+  EnvenConfig copyWith({
+    String? output,
+    String? seed,
+    String? className,
+  }) {
+    return EnvenConfig(
+      output: output ?? this.output,
+      seed: seed ?? this.seed,
+      className: className ?? this.className,
+    );
+  }
 }
 
 /// Represents a single entry in a .env file.
@@ -103,6 +132,7 @@ class EnvEntryAnnotation {
   // File annotations
   static const output = 'output';
   static const seed = 'seed';
+  static const className = 'class';
 
   // Entry annotations
   static const obfuscate = 'obfuscate';

@@ -22,7 +22,7 @@ class EnvBuilder implements Builder {
 
     _generated = true;
 
-    final env = EnvParser().readFileSystem().content;
+    final env = EnvParser().readFileSystem().parsedFile;
     final outputContent = EnvenGenerator().generate(env);
     final outputPath = env.config.output ?? EnvenConfig.defaultOutput;
     FileUtils.createMissingFolders(filePath: outputPath);

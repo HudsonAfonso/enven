@@ -1,3 +1,20 @@
+## 1.3.0
+
+- feat: add `#enven:class=Config` annotation to customize the generated class name (#5)
+- feat: add `--env-files` and `class-name` CLI options (#5)
+
+## 1.2.4
+
+- chore: migrating from Github to Codeberg: https://codeberg.org/Tienisto/enven
+
+## 1.2.3
+
+- deps: loosen `build` dependency constraint
+
+## 1.2.2
+
+- deps: loosen `build` dependency constraint
+
 ## 1.2.1
 
 - style: format code

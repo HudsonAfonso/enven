@@ -6,10 +6,10 @@ class EnvResult {
   final List<String> candidates;
 
   /// The parsed .env file.
-  final EnvFile content;
+  final EnvFile parsedFile;
 
   EnvResult({
     required this.candidates,
-    required this.content,
+    required this.parsedFile,
   });
 }

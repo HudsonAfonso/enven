@@ -9,6 +9,7 @@ void main() {
     final env = parser.parseContent('');
     expect(env.config.output, isNull);
     expect(env.config.seed, isNull);
+    expect(env.config.className, isNull);
     expect(env.entries, isEmpty);
   });
 
@@ -16,6 +17,7 @@ void main() {
     final env = parser.parseContent('#enven:output=hi.dart');
     expect(env.config.output, 'hi.dart');
     expect(env.config.seed, isNull);
+    expect(env.config.className, isNull);
     expect(env.entries, isEmpty);
   });
 
@@ -23,7 +25,56 @@ void main() {
     final env = parser.parseContent('#enven:seed=123');
     expect(env.config.output, isNull);
     expect(env.config.seed, '123');
+    expect(env.config.className, isNull);
     expect(env.entries, isEmpty);
+  });
+
+  test('Should parse only class name', () {
+    final env = parser.parseContent('#enven:class=Config');
+    expect(env.config.output, isNull);
+    expect(env.config.seed, isNull);
+    expect(env.config.className, 'Config');
+    expect(env.entries, isEmpty);
+  });
+
+  test('Should parse class name with other config', () {
+    final env = parser.parseContent('''
+#enven:output=lib/env.dart
+#enven:class=AppConfig
+API_KEY=abc
+''');
+    expect(env.config.output, 'lib/env.dart');
+    expect(env.config.className, 'AppConfig');
+    expect(env.entries, hasLength(1));
+  });
+
+  test('Should use latest class name when merging files', () {
+    final env = parser.parseContentList([
+      '''
+#enven:class=Base
+aa=1
+''',
+      '''
+#enven:class=Override
+aa=2
+''',
+    ]);
+
+    expect(env.config.className, 'Override');
+  });
+
+  test('Should inherit class name from fallback', () {
+    final env = parser.parseContentList([
+      '''
+#enven:class=FromBase
+aa=1
+''',
+      '''
+aa=2
+''',
+    ]);
+
+    expect(env.config.className, 'FromBase');
   });
 
   test('Should parse single key-value', () {

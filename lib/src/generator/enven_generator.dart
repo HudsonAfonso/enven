@@ -8,14 +8,17 @@ class EnvenGenerator {
 
   /// Generates the content of the env.g.dart file.
   String generate(EnvFile env) {
+    final className = env.config.className ?? EnvenConfig.defaultClassName;
+    final dataClassName = '${className}Data';
     final buffer = StringBuffer();
     buffer.writeln('/// Generated file. Do not edit.');
     buffer.writeln('///');
     buffer.writeln('/// To regenerate, run: `dart run enven`');
-    buffer.writeln('class Env {');
+    buffer.writeln('class $className {');
     buffer.writeln('  /// Override this instance to mock the environment.');
-    buffer.writeln('  /// Example: `Env.instance = MockEnvData();`');
-    buffer.writeln('  static EnvData instance = EnvData();');
+    buffer.writeln(
+        '  /// Example: `$className.instance = Mock$dataClassName();`');
+    buffer.writeln('  static $dataClassName instance = $dataClassName();');
     buffer.writeln();
 
     final entries = env.entries.entries.toList();
@@ -45,7 +48,7 @@ class EnvenGenerator {
     buffer.writeln('}');
 
     buffer.writeln();
-    buffer.writeln('class EnvData {');
+    buffer.writeln('class $dataClassName {');
     final random = env.config.seed == null
         ? Random.secure()
         : Random(env.config.seed!.hashCode);

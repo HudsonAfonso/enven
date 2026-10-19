@@ -6,7 +6,7 @@ import 'package:enven/src/model/result.dart';
 import 'package:enven/src/parser/multiline_string_parser.dart';
 import 'package:enven/src/parser/value_parser.dart';
 
-const _envFiles = [
+const defaultEnvFiles = [
   '.env',
   '.env.dev',
   '.env.development',
@@ -24,20 +24,23 @@ class EnvParser {
   });
 
   /// Parses the .env file from the file system.
-  EnvResult readFileSystem() {
+  /// If [envFiles] is provided, only those files are used instead of the
+  /// default list.
+  EnvResult readFileSystem({List<String>? envFiles}) {
+    final filesToCheck = envFiles ?? defaultEnvFiles;
     final candidates = <String>[];
     final contents = <String>[];
-    for (int i = 0; i < _envFiles.length; i++) {
-      final file = File(_envFiles[i]);
+    for (int i = 0; i < filesToCheck.length; i++) {
+      final file = File(filesToCheck[i]);
       if (file.existsSync()) {
-        candidates.add(_envFiles[i]);
+        candidates.add(filesToCheck[i]);
         contents.add(file.readAsStringSync());
       }
     }
 
     return EnvResult(
       candidates: candidates,
-      content: parseContentList(contents),
+      parsedFile: parseContentList(contents),
     );
   }
 
@@ -66,6 +69,7 @@ class EnvParser {
     // file config
     String? output;
     String? seed;
+    String? className;
 
     final entries = <String, EnvEntry>{};
     Map<String, EnvEntryAnnotation> annotationCache = {};
@@ -95,6 +99,9 @@ class EnvParser {
             case EnvEntryAnnotation.seed:
               seed = annotation.value.toString();
               break;
+            case EnvEntryAnnotation.className:
+              className = annotation.value.toString();
+              break;
             default:
               annotationCache[annotation.key] = annotation;
           }
@@ -113,6 +120,7 @@ class EnvParser {
       config: EnvenConfig(
         output: output,
         seed: seed,
+        className: className,
       ),
       entries: entries,
     );
